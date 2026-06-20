@@ -1,0 +1,31 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-production:
+    name: Deploy Production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: root
+          key: ${{ secrets.DO_SSH_KEY }}
+          script: |
+            set -e
+            echo "--- Pulling latest code ---"
+            cd /var/www/dilbahararomas/frontend
+            git pull origin main
+            echo "--- Installing dependencies ---"
+            npm ci
+            echo "--- Building Next.js app ---"
+            npm run build
+            echo "--- Restarting server ---"
+            pm2 reload dilbahar-web --update-env
+            pm2 save
+            echo "--- Production deploy complete ---"
