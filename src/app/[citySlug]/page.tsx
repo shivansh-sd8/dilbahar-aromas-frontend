@@ -1,7 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import PageHeader from "@/components/layout/PageHeader";
 import ProductCard from "@/components/products/ProductCard";
 import JsonLd from "@/components/seo/JsonLd";
@@ -44,7 +44,13 @@ export default async function CityPage({
 }) {
   const { citySlug } = await params;
   const page = await api.getCityPage(citySlug);
-  if (!page) notFound();
+  if (!page) {
+    // Legacy WordPress posts lived at the site root (e.g. /sandalwood-oil-benefits-uses);
+    // they now live under /blog/<slug>. 301-redirect any matching post to preserve SEO.
+    const post = await api.getBlogPost(citySlug);
+    if (post) permanentRedirect(`/blog/${citySlug}`);
+    notFound();
+  }
 
   return (
     <>

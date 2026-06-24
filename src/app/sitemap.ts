@@ -7,6 +7,7 @@ const BASE = process.env.NEXT_PUBLIC_SITE_URL || site.url;
 const staticPaths = [
   "",
   "/collections",
+  "/manufacturers-in-india",
   "/about-us",
   "/about/kannauj-heritage",
   "/about/deg-bhapka-distillation",
