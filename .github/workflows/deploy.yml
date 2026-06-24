@@ -23,6 +23,8 @@ jobs:
             git pull origin main
             echo "--- Installing dependencies ---"
             npm ci
+            echo "--- Cleaning previous build artifacts ---"
+            rm -rf .next
             echo "--- Building Next.js app ---"
             npm run build
             echo "--- Restarting server ---"
