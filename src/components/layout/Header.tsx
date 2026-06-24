@@ -15,10 +15,16 @@ import Logo from "./Logo";
 import { categories } from "@/lib/config";
 import { useCart } from "@/lib/cart";
 
-const CartButton: React.FC = () => {
+const CartButton: React.FC<{ dark?: boolean }> = ({ dark = false }) => {
   const { count } = useCart();
   return (
-    <Button variant="ghost" size="icon" aria-label="Cart" className="relative" render={<Link href="/cart" />}>
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label="Cart"
+      className={`relative ${dark ? "text-brand-foreground hover:bg-brand-foreground/10" : ""}`}
+      render={<Link href="/cart" />}
+    >
       <ShoppingBag className="size-5" />
       {count > 0 && (
         <span className="absolute -right-0.5 -top-0.5 inline-flex size-4 items-center justify-center rounded-full bg-primary text-[0.6rem] font-bold text-primary-foreground">
@@ -71,17 +77,25 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-const Header: React.FC = () => {
+const Header: React.FC<{ tone?: "light" | "dark" }> = ({ tone = "light" }) => {
   const [open, setOpen] = React.useState(false);
   const [activeMenu, setActiveMenu] = React.useState<string | null>(null);
+  const dark = tone === "dark";
+
+  const headerCls = dark
+    ? "sticky top-0 z-50 w-full border-b border-brand-foreground/15 bg-brand/95 text-brand-foreground backdrop-blur supports-[backdrop-filter]:bg-brand/85"
+    : "sticky top-0 z-50 w-full border-b border-border bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/80";
+  const navLinkCls = dark
+    ? "flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-brand-foreground/85 transition-colors hover:text-gold"
+    : "flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-foreground/85 transition-colors hover:text-primary";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/80">
+    <header className={headerCls}>
       <div className="container-px flex h-16 items-center justify-between gap-4 lg:h-20">
         {/* Mobile menu trigger */}
         <div className="flex items-center lg:hidden">
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger render={<Button variant="ghost" size="icon" aria-label="Open menu" />}>
+            <SheetTrigger render={<Button variant="ghost" size="icon" aria-label="Open menu" className={dark ? "text-brand-foreground hover:bg-brand-foreground/10" : undefined} />}>
               <Menu className="size-6" />
             </SheetTrigger>
             <SheetContent side="left" className="w-[88vw] max-w-sm overflow-y-auto bg-cream p-0">
@@ -125,7 +139,7 @@ const Header: React.FC = () => {
           </Sheet>
         </div>
 
-        <Logo />
+        <Logo variant={dark ? "light" : "dark"} />
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-1 lg:flex" onMouseLeave={() => setActiveMenu(null)}>
@@ -133,7 +147,7 @@ const Header: React.FC = () => {
             <div key={g.label} className="relative" onMouseEnter={() => setActiveMenu(g.label)}>
               <Link
                 href={g.href || "#"}
-                className="flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-foreground/85 transition-colors hover:text-primary"
+                className={navLinkCls}
               >
                 {g.label}
                 {g.items && <ChevronDown className="size-3.5 opacity-60" />}
@@ -158,14 +172,14 @@ const Header: React.FC = () => {
 
         {/* Right actions */}
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" aria-label="Search" className="hidden sm:inline-flex">
+          <Button variant="ghost" size="icon" aria-label="Search" className={`hidden sm:inline-flex ${dark ? "text-brand-foreground hover:bg-brand-foreground/10" : ""}`}>
             <Search className="size-5" />
           </Button>
-          <Button variant="ghost" size="icon" aria-label="Account" render={<Link href="/account" />}>
+          <Button variant="ghost" size="icon" aria-label="Account" className={dark ? "text-brand-foreground hover:bg-brand-foreground/10" : undefined} render={<Link href="/account" />}>
             <User className="size-5" />
           </Button>
-          <CartButton />
-          <Button render={<Link href="/b2b" />} variant="outline" className="ml-1 hidden xl:inline-flex">
+          <CartButton dark={dark} />
+          <Button render={<Link href="/b2b" />} variant="outline" className={`ml-1 hidden xl:inline-flex ${dark ? "border-brand-foreground/40 bg-transparent text-brand-foreground hover:bg-brand-foreground/10 hover:text-brand-foreground" : ""}`}>
             B2B Login
           </Button>
           <Button render={<Link href="/collections" />} className="ml-1 hidden lg:inline-flex">

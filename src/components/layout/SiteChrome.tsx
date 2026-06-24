@@ -9,13 +9,15 @@ import WhatsAppBubble from "./WhatsAppBubble";
 
 /**
  * Renders the public store chrome (announcement bar, header, footer, WhatsApp)
- * around page content — except on /admin routes, which have their own shell.
+ * around page content — except on /admin routes, which have their own shell,
+ * and the /demo palette-preview routes, which render their own scoped chrome.
  */
 const SiteChrome: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isDemo = pathname?.startsWith("/demo");
 
-  if (isAdmin) return <>{children}</>;
+  if (isAdmin || isDemo) return <>{children}</>;
 
   return (
     <>
