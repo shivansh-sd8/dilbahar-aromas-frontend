@@ -18,7 +18,7 @@ export const metadata: Metadata = buildMetadata({
 export default async function BlogIndexPage() {
   let posts: BlogPost[] = [];
   try {
-    const res = await api.listBlog({ limit: 100 });
+    const res = await api.listBlog({ limit: 500 });
     posts = res.posts;
   } catch {
     /* API unavailable */
